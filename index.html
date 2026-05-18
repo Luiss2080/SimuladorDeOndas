@@ -8,7 +8,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/src/assets/styles/global.css">
-    <!-- Incluimos PixiJS vía CDN para gráficos de alto rendimiento y organización -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/7.3.2/pixi.min.js"></script>
 </head>
 <body>
@@ -19,29 +18,34 @@
         </header>
         
         <div class="main-content">
+            <!-- Área de Simulación -->
             <div class="simulation-area">
                 <div class="canvas-container" id="contenedorCanvas">
                     <!-- PixiJS creará el canvas aquí -->
                 </div>
                 
+                <!-- Controles de reproducción inferiores -->
                 <div class="playback-controls">
                     <div class="btn-group">
                         <button id="btnPlayPause" class="action-btn">Pausar</button>
                         <button id="btnPaso" class="action-btn secondary">Paso a Paso</button>
                     </div>
                     
+                    <!-- NUEVO: Modo de Emisión (Onda continua o Pulso) -->
+                    <div class="radio-group horizontal card-style">
+                        <span>Emisión:</span>
+                        <label><input type="radio" name="modoEmision" value="continuo" checked> Continuo</label>
+                        <label><input type="radio" name="modoEmision" value="pulso"> Pulso</label>
+                    </div>
+
                     <div class="radio-group horizontal card-style">
                         <label><input type="radio" name="velocidad" value="normal" checked> Normal</label>
                         <label><input type="radio" name="velocidad" value="lento"> Lento</label>
                     </div>
-
-                    <div class="radio-group horizontal card-style">
-                        <label><input type="radio" name="perspectiva" value="superior" checked> Vista Superior</label>
-                        <label><input type="radio" name="perspectiva" value="lateral"> Vista Lateral</label>
-                    </div>
                 </div>
             </div>
             
+            <!-- Panel de Controles -->
             <aside class="sidebar-controls">
                 <div class="control-card">
                     <h3>Parámetros</h3>
@@ -78,11 +82,19 @@
                     </div>
                 </div>
 
+                <!-- NUEVO: Perspectiva en el sidebar -->
+                <div class="control-card">
+                    <h3>Perspectiva</h3>
+                    <div class="radio-group vertical">
+                        <label><input type="radio" name="perspectiva" value="superior" checked> Vista Superior</label>
+                        <label><input type="radio" name="perspectiva" value="lateral"> Vista Lateral</label>
+                    </div>
+                </div>
+
                 <button id="btnReiniciar" class="danger-btn">Reiniciar Simulación</button>
             </aside>
         </div>
     </div>
-    <!-- Punto de entrada en español -->
     <script type="module" src="/src/principal.js"></script>
 </body>
 </html>

@@ -49,15 +49,11 @@ export class ControladorInterfaz {
             }
         });
 
-        // --- NUEVOS EVENTOS PARA COINCIDIR CON LA IMAGEN ---
-
-        // Control de mostrar/ocultar gráfica
         const checkGraficas = document.getElementById('checkGraficas');
         checkGraficas.addEventListener('change', (e) => {
             this.renderizador.setMostrarGrafica(e.target.checked);
         });
 
-        // Control de modo de visualización (Ondas, Partículas, Ambos)
         const radiosModoVista = document.querySelectorAll('input[name="modoVista"]');
         radiosModoVista.forEach(radio => {
             radio.addEventListener('change', (e) => {
@@ -69,6 +65,14 @@ export class ControladorInterfaz {
                 } else if (valor === 'ambos') {
                     this.renderizador.setOpcionesVisualizacion(true, true);
                 }
+            });
+        });
+
+        // --- NUEVO: EVENTO PARA MODO DE EMISIÓN ---
+        const radiosModoEmision = document.querySelectorAll('input[name="modoEmision"]');
+        radiosModoEmision.forEach(radio => {
+            radio.addEventListener('change', (e) => {
+                this.modeloOnda.setModo(e.target.value);
             });
         });
     }
