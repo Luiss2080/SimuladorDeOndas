@@ -2,7 +2,6 @@ export class Renderizador {
     constructor(contenedorId) {
         const contenedor = document.getElementById(contenedorId);
         
-        // Inicializar la aplicación PixiJS
         this.app = new PIXI.Application({
             width: 800,
             height: 400,
@@ -16,6 +15,12 @@ export class Renderizador {
         // Capa para las ondas (Fondo)
         this.capaOndas = new PIXI.Graphics();
         this.app.stage.addChild(this.capaOndas);
+
+        // --- EFECTO DE LIBRERÍA (PixiJS Filter) ---
+        // Aplicamos un filtro de desenfoque a las ondas para que se vean suaves y continuas
+        const filtroDesenfoque = new PIXI.filters.BlurFilter();
+        filtroDesenfoque.blur = 5; 
+        this.capaOndas.filters = [filtroDesenfoque];
 
         // Crear un contenedor de partículas para máximo rendimiento
         this.contenedorParticulas = new PIXI.ParticleContainer(3000, {
@@ -33,7 +38,6 @@ export class Renderizador {
 
         this.spritesParticulas = [];
         
-        // Estados de visualización
         this.mostrarOndas = true;
         this.mostrarParticulas = true;
         this.mostrarGrafica = true;
@@ -42,17 +46,28 @@ export class Renderizador {
     inicializarVistaParticulas(sistemaParticulas) {
         const particulas = sistemaParticulas.getParticulas();
         
+        // Crear una textura REDONDA ("Pelotitas" con volumen)
         const canvas = document.createElement('canvas');
-        canvas.width = 2;
-        canvas.height = 2;
+        canvas.width = 12;
+        canvas.height = 12;
         const ctx = canvas.getContext('2d');
-        ctx.fillStyle = '#ffffff'; // Partículas blancas como en la imagen
-        ctx.fillRect(0, 0, 2, 2);
+        
+        // Gradiente radial para dar efecto de esfera 3D
+        const gradiente = ctx.createRadialGradient(4, 4, 1, 6, 6, 5);
+        gradiente.addColorStop(0, '#ffffff');
+        gradiente.addColorStop(0.8, '#cbd5e1'); // Slate 300
+        gradiente.addColorStop(1, '#64748b'); // Slate 500
+        
+        ctx.beginPath();
+        ctx.arc(6, 6, 5, 0, Math.PI * 2);
+        ctx.fillStyle = gradiente;
+        ctx.fill();
         
         const textura = PIXI.Texture.from(canvas);
 
         for (const p of particulas) {
             const sprite = new PIXI.Sprite(textura);
+            sprite.anchor.set(0.5); // Centrar el sprite
             sprite.x = p.xActual;
             sprite.y = p.yActual;
             this.contenedorParticulas.addChild(sprite);
@@ -73,23 +88,25 @@ export class Renderizador {
             this.contenedorParticulas.visible = false;
         }
 
-        // 2. Renderizar Ondas (Efecto de compresión y rarefacción en escala de grises)
+        // 2. Renderizar Ondas REDONDEADAS (Círculos concéntricos)
         this.capaOndas.clear();
         if (this.mostrarOndas) {
-            const resolucion = 4; // Ancho de cada banda
-            for (let x = 0; x < 800; x += resolucion) {
-                const presion = modeloOnda.getPresionEn(x);
+            const xCentro = 0; // Origen de la onda (Altavoz a la izquierda)
+            const yCentro = 200; // Centro vertical
+            const resolucion = 8; // Espaciado entre anillos
+            
+            // Dibujamos círculos concéntricos desde el origen
+            for (let r = 0; r < 900; r += resolucion) {
+                // Usamos el radio como la distancia 'x' en la fórmula de la onda
+                const presion = modeloOnda.getPresionEn(r); 
                 
-                // Mapear la presión (-amplitud a +amplitud) a un valor de gris (0 a 255)
                 const factor = (presion + modeloOnda.amplitud) / (modeloOnda.amplitud * 2);
                 const valorGris = Math.floor(factor * 255);
-                
-                // Crear color RGB en escala de grises
                 const color = (valorGris << 16) | (valorGris << 8) | valorGris;
                 
-                this.capaOndas.beginFill(color, 0.4); // Opacidad para no saturar
-                this.capaOndas.drawRect(x, 0, resolucion, 400);
-                this.capaOndas.endFill();
+                // Dibujar el anillo
+                this.capaOndas.lineStyle(resolucion, color, 0.6);
+                this.capaOndas.drawCircle(xCentro, yCentro, r);
             }
         }
 
@@ -101,24 +118,21 @@ export class Renderizador {
             const anchoGrafica = 600;
             const altoGrafica = 100;
 
-            // Fondo de la gráfica (vidrio esmerilado oscuro)
             this.capaGrafica.beginFill(0x0f172a, 0.8);
             this.capaGrafica.lineStyle(1, 0x334155, 1);
             this.capaGrafica.drawRoundedRect(xInicio - 10, yCentro - 50, anchoGrafica + 20, altoGrafica, 8);
             this.capaGrafica.endFill();
 
-            // Eje central
             this.capaGrafica.lineStyle(1, 0x475569, 1);
             this.capaGrafica.moveTo(xInicio, yCentro);
             this.capaGrafica.lineTo(xInicio + anchoGrafica, yCentro);
 
-            // Dibujar la curva senoidal de presión
-            this.capaGrafica.lineStyle(2, 0x0ea5e9, 1); // Línea cyan
+            this.capaGrafica.lineStyle(2, 0x0ea5e9, 1);
             
             let primerPunto = true;
             for (let x = xInicio; x < xInicio + anchoGrafica; x++) {
+                // Para la gráfica usamos la presión en el eje X horizontal
                 const presion = modeloOnda.getPresionEn(x);
-                // Invertimos la presión para que positivo sea arriba
                 const y = yCentro - (presion / modeloOnda.amplitud) * 40; 
                 
                 if (primerPunto) {
