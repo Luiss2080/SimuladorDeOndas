@@ -3,47 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulador de Ondas Sonoras</title>
+    <title>Simulador de Ondas Sonoras - Académico</title>
+    <!-- Usaremos Google Fonts para una tipografía más profesional -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/src/assets/styles/global.css">
 </head>
 <body>
     <div id="app">
         <header>
             <h1>Simulador de Ondas Sonoras</h1>
+            <p class="subtitle">Laboratorio Virtual de Acústica</p>
         </header>
         
-        <main>
-            <!-- Área de simulación -->
-            <div class="canvas-container">
-                <canvas id="simulationCanvas" width="800" height="400"></canvas>
+        <div class="main-content">
+            <!-- Área de Simulación (Izquierda/Centro) -->
+            <div class="simulation-area">
+                <div class="canvas-container">
+                    <canvas id="simulationCanvas" width="800" height="400"></canvas>
+                </div>
+                
+                <!-- Controles de reproducción inferiores -->
+                <div class="playback-controls">
+                    <div class="btn-group">
+                        <button id="playPauseBtn" class="action-btn">Pausar</button>
+                        <button id="stepBtn" class="action-btn secondary">Paso a Paso</button>
+                    </div>
+                    
+                    <div class="radio-group horizontal card-style">
+                        <label><input type="radio" name="speed" value="normal" checked> Normal</label>
+                        <label><input type="radio" name="speed" value="slow"> Lento</label>
+                    </div>
+
+                    <div class="radio-group horizontal card-style">
+                        <label><input type="radio" name="perspective" value="top" checked> Vista Superior</label>
+                        <label><input type="radio" name="perspective" value="side"> Vista Lateral</label>
+                    </div>
+                </div>
             </div>
             
-            <!-- Panel de controles -->
-            <section class="controls-panel">
-                <!-- Los controles se detallarán en la Fase 9 -->
-                <div class="control-group">
-                    <label for="freqSlider">Frecuencia: <span id="freqValue">2</span> Hz</label>
-                    <input type="range" id="freqSlider" min="1" max="5" step="0.1" value="2">
+            <!-- Panel de Controles (Derecha) -->
+            <aside class="sidebar-controls">
+                <!-- Parámetros -->
+                <div class="control-card">
+                    <h3>Parámetros</h3>
+                    <div class="control-group">
+                        <div class="label-row">
+                            <label for="freqSlider">Frecuencia</label>
+                            <span class="value-display"><span id="freqValue">2.0</span> Hz</span>
+                        </div>
+                        <input type="range" id="freqSlider" min="1" max="5" step="0.1" value="2">
+                    </div>
+
+                    <div class="control-group">
+                        <div class="label-row">
+                            <label for="ampSlider">Amplitud</label>
+                            <span class="value-display"><span id="ampValue">50</span>%</span>
+                        </div>
+                        <input type="range" id="ampSlider" min="10" max="100" step="5" value="50">
+                    </div>
                 </div>
 
-                <div class="control-group">
-                    <label for="ampSlider">Amplitud: <span id="ampValue">50</span></label>
-                    <input type="range" id="ampSlider" min="10" max="100" step="5" value="50">
+                <!-- Visualización -->
+                <div class="control-card">
+                    <h3>Visualización</h3>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" id="showGraph" checked> Mostrar Gráficas</label>
+                        <label><input type="checkbox" id="playSound" checked> Reproducir Tono</label>
+                    </div>
+                    
+                    <div class="divider"></div>
+                    
+                    <div class="radio-group vertical">
+                        <label><input type="radio" name="viewMode" value="waves"> Solo Ondas</label>
+                        <label><input type="radio" name="viewMode" value="particles"> Solo Partículas</label>
+                        <label><input type="radio" name="viewMode" value="both" checked> Ambos Modos</label>
+                    </div>
                 </div>
 
-                <div class="button-group">
-                    <button id="playPauseBtn">Pausar</button>
-                    <button id="resetBtn">Reiniciar</button>
-                </div>
-
-                <div class="checkbox-group">
-                    <label><input type="checkbox" id="showWaves" checked> Mostrar Ondas</label>
-                    <label><input type="checkbox" id="showParticles" checked> Mostrar Partículas</label>
-                    <label><input type="checkbox" id="playSound"> Reproducir Sonido</label>
-                </div>
-            </section>
-        </main>
+                <!-- Acción Principal -->
+                <button id="resetBtn" class="danger-btn">Reiniciar Simulación</button>
+            </aside>
+        </div>
     </div>
-    <script type="module" src="/src/main.ts"></script>
+    <!-- Usaremos .js directamente para evitar problemas de compilación en este entorno -->
+    <script type="module" src="/src/main.js"></script>
 </body>
 </html>
