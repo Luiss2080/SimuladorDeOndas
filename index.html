@@ -8,13 +8,15 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/src/assets/styles/global.css">
+    <!-- PixiJS para gráficos y GSAP para animaciones de interfaz -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/7.3.2/pixi.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 </head>
 <body>
     <div id="app">
         <header>
             <h1>Simulador de Ondas Sonoras</h1>
-            <p class="subtitle">Laboratorio Virtual de Acústica</p>
+            <p class="subtitle">Laboratorio Virtual de Acústica y Propagación</p>
         </header>
         
         <div class="main-content">
@@ -22,31 +24,49 @@
             <div class="simulation-area">
                 <div class="canvas-container" id="contenedorCanvas">
                     <!-- PixiJS creará el canvas aquí -->
+                    <div id="marcadorCentro">Presión en el Centro</div>
                 </div>
                 
                 <!-- Controles de reproducción inferiores -->
-                <div class="playback-controls">
+                <div class="playback-controls card-style">
                     <div class="btn-group">
                         <button id="btnPlayPause" class="action-btn">Pausar</button>
                         <button id="btnPaso" class="action-btn secondary">Paso a Paso</button>
                     </div>
                     
-                    <!-- NUEVO: Modo de Emisión (Onda continua o Pulso) -->
-                    <div class="radio-group horizontal card-style">
+                    <div class="radio-group horizontal">
                         <span>Emisión:</span>
                         <label><input type="radio" name="modoEmision" value="continuo" checked> Continuo</label>
                         <label><input type="radio" name="modoEmision" value="pulso"> Pulso</label>
                     </div>
 
-                    <div class="radio-group horizontal card-style">
+                    <div class="radio-group horizontal">
+                        <span>Velocidad:</span>
                         <label><input type="radio" name="velocidad" value="normal" checked> Normal</label>
                         <label><input type="radio" name="velocidad" value="lento"> Lento</label>
+                    </div>
+                </div>
+
+                <!-- NUEVO PANEL: Información en tiempo real -->
+                <div class="info-panel card-style">
+                    <div class="info-item">
+                        <span class="info-label">Estado:</span>
+                        <span id="txtEstado" class="info-value">Emitiendo</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Longitud de Onda:</span>
+                        <span id="txtLongitud" class="info-value">-- m</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Periodo:</span>
+                        <span id="txtPeriodo" class="info-value">-- s</span>
                     </div>
                 </div>
             </div>
             
             <!-- Panel de Controles -->
             <aside class="sidebar-controls">
+                <!-- Parámetros -->
                 <div class="control-card">
                     <h3>Parámetros</h3>
                     <div class="control-group">
@@ -66,6 +86,7 @@
                     </div>
                 </div>
 
+                <!-- Visualización -->
                 <div class="control-card">
                     <h3>Visualización</h3>
                     <div class="checkbox-group">
@@ -82,12 +103,20 @@
                     </div>
                 </div>
 
-                <!-- NUEVO: Perspectiva en el sidebar -->
-                <div class="control-card">
-                    <h3>Perspectiva</h3>
-                    <div class="radio-group vertical">
-                        <label><input type="radio" name="perspectiva" value="superior" checked> Vista Superior</label>
-                        <label><input type="radio" name="perspectiva" value="lateral"> Vista Lateral</label>
+                <!-- NUEVO: Panel de Leyenda -->
+                <div class="control-card legend-card">
+                    <h3>Leyenda</h3>
+                    <div class="legend-item">
+                        <div class="color-box compresión"></div>
+                        <span>Zona de Compresión (Alta Presión)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="color-box rarefaccion"></div>
+                        <span>Zona de Rarefacción (Baja Presión)</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="dot-box"></div>
+                        <span>Molécula de Aire</span>
                     </div>
                 </div>
 
