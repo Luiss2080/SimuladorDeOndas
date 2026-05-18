@@ -13,7 +13,7 @@ const modeloOnda = new ModeloOnda();
 // 2. Inicializar el sistema de partículas (ancho: 800, alto: 400, espaciado: 15)
 const sistemaParticulas = new SistemaParticulas(modeloOnda, 800, 400, 15);
 
-// 3. Inicializar el renderizador visual (PixiJS) pasando el ID del contenedor
+// 3. Inicializar el renderizador visual (PixiJS)
 const renderizador = new Renderizador('contenedorCanvas');
 renderizador.inicializarVistaParticulas(sistemaParticulas);
 
@@ -24,11 +24,13 @@ const gestorAudio = new GestorAudio();
 const motor = new MotorSimulacion((delta) => {
     modeloOnda.actualizar(delta);
     sistemaParticulas.actualizar();
-    renderizador.actualizar(sistemaParticulas);
+    
+    // Pasamos tanto el sistema de partículas como el modelo de onda para dibujar las ondas y gráficas
+    renderizador.actualizar(sistemaParticulas, modeloOnda);
 });
 
-// 6. Inicializar el controlador de la interfaz de usuario
-new ControladorInterfaz(modeloOnda, gestorAudio, motor);
+// 6. Inicializar el controlador de la interfaz de usuario (pasamos el renderizador para controlar las opciones de visualización)
+new ControladorInterfaz(modeloOnda, gestorAudio, motor, renderizador);
 
 // 7. Arrancar la simulación
 motor.iniciar();
